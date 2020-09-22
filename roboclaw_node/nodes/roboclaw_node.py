@@ -228,10 +228,11 @@ class Node:
         iL_pub = rospy.Publisher('/iL', Float64, queue_size=10)    #
         iR_pub = rospy.Publisher('/iR', Float64, queue_size=10)
         
-        i = roboclaw.ReadCurrents(self.address)
+        i = roboclaw.ReadCurrents(self.address)[0]
         i_L = roboclaw.ReadCurrents(self.address)[1]
         i_R = roboclaw.ReadCurrents(self.address)[2]
         
+        i = 10*float(i)
         i_L = 10*float(i_L)
         i_R = 10*float(i_R)
         
@@ -242,7 +243,7 @@ class Node:
         volts = volts + 0.5
         
         Battery.voltage = volts
-        Battery.current = i
+        Battery.current = i/1000.0
         Battery.capacity = 6.0
         Battery.percentage = volts/12.6
         Battery.location = "Power connection - inside of robot"
