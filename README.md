@@ -36,7 +36,7 @@ values but in most cases you will still need to manually adjust them for optimum
 Just clone the repo into your catkin workspace. It contains the ROS package and the motor controller driver.  Remmeber to make sure ROS has permisions to use the dev port you give it.
 ```bash
 cd <workspace>/src
-git clone https://github.com/sonyccd/roboclaw_ros.git
+git clone https://github.com/Tilaguy/roboclaw_ros.git
 cd <workspace>
 catkin_make
 source devel/setup.bash
