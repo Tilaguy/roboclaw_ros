@@ -143,7 +143,7 @@ class Node:
             G=0.0
         self.ref_WR = G*(RIGHT_ANALOG_VER + LEFT_ANALOG_HOR)
         self.ref_WL = G*(RIGHT_ANALOG_VER - LEFT_ANALOG_HOR)
-        print(self.ref_WR,self.ref_WL)
+        
         if LB==1 and A==1: #Laser ON
             os.system("sudo python /home/ubuntu/Desktop/Mercury/laser_on.py")
         elif LB==1 and RB==1: #Leds ON
@@ -261,31 +261,31 @@ class Node:
         while not rospy.is_shutdown():
             if (rospy.get_rostime() - self.last_set_speed_time).to_sec() > 1:
                 rospy.loginfo("Did not get command for 1 second, stopping")
-                self.encoders()
-                if self.EN_ctr:
-                    try:
+            self.encoders()
+            if self.EN_ctr:
+                try:
 #                        UR = self.WR_Control()
 #                        UL = self.WL_Control()
-                        UR = self.last_UR
-                        UL = self.last_UL
+                    UR = self.last_UR
+                    UL = self.last_UL
 #                        pub_pid = "Left ref: "+str(self.ref_WL)+", Speed_L: "+str(self.WL)+", UL: "+str(UL)+",	Right ref: "+str(self.ref_WR)+", Speed_R: "+str(self.WR)+", UR: "+str(UR)
 #                        self.pid_pub.publish(pub_pid)
-                        roboclaw.ForwardBackwardM1(self.address, int(63+UL)) # Left
-                        roboclaw.ForwardBackwardM2(self.address, int(63-UR))
-                    except OSError as e:
-                        rospy.logerr("Could not stop")
-                        rospy.logdebug(e)
-                else:
-                    try:
-                        roboclaw.ForwardBackwardM1(self.address, 63+self.last_UR) # Left
-                        roboclaw.ForwardBackwardM2(self.address, 63-self.last_UL)
-                    except OSError as e:
-                        rospy.logerr("Could not stop")
-                        rospy.logdebug(e)
-                
-                # TODO need find solution to the OSError11 looks like sync problem with serial
-                status1, enc1, crc1 = None, None, None
-                status2, enc2, crc2 = None, None, None
+                    roboclaw.ForwardBackwardM1(self.address, int(63+UL)) # Left
+                    roboclaw.ForwardBackwardM2(self.address, int(63-UR))
+                except OSError as e:
+                    rospy.logerr("Could not stop")
+                    rospy.logdebug(e)
+            else:
+                try:
+                    roboclaw.ForwardBackwardM1(self.address, 63+self.last_UR) # Left
+                    roboclaw.ForwardBackwardM2(self.address, 63-self.last_UL)
+                except OSError as e:
+                    rospy.logerr("Could not stop")
+                    rospy.logdebug(e)
+            
+            # TODO need find solution to the OSError11 looks like sync problem with serial
+            status1, enc1, crc1 = None, None, None
+            status2, enc2, crc2 = None, None, None
             
             try:
                 status1, enc1, crc1 = roboclaw.ReadEncM1(self.address)
